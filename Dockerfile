@@ -1,7 +1,17 @@
 FROM alpine:3.4
-RUN apk --no-cache add bash go bzr git mercurial subversion openssh-client ca-certificates
 
-RUN mkdir -p /go/src /go/bin && chmod -R 777 /go
+RUN apk add --no-cache git make musl-dev go
+
+# Configure Go
+ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
-WORKDIR /go
+
+RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+
+# Install Glide
+RUN go get -u github.com/Masterminds/glide/...
+
+WORKDIR $GOPATH
+
+CMD ["make"]
